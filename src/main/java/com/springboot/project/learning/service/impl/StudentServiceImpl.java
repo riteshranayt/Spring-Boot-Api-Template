@@ -1,10 +1,12 @@
 package com.springboot.project.learning.service.impl;
 
+import com.springboot.project.learning.controller.StudentController;
 import com.springboot.project.learning.dto.StudentDtoRequest;
 import com.springboot.project.learning.dto.StudentDtoResponse;
 import com.springboot.project.learning.entity.Student;
 import com.springboot.project.learning.repository.StudentRepository;
 import com.springboot.project.learning.service.StudentService;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,9 +15,14 @@ import java.util.List;
 public class StudentServiceImpl implements StudentService {
 
     private final StudentRepository studentRepository;
+    private final ModelMapper  modelMapper;
 
-    public StudentServiceImpl(StudentRepository studentRepository){
+    public StudentServiceImpl(
+            StudentRepository studentRepository,
+            ModelMapper       modelMapper
+    ){
         this.studentRepository = studentRepository;
+        this.modelMapper       = modelMapper;
     }
     @Override
     public List<StudentDtoResponse> getAllStudents() {
@@ -23,7 +30,7 @@ public class StudentServiceImpl implements StudentService {
         List<StudentDtoResponse> studentDtoList =
                         studentList
                         .stream()
-                        .map(s-> new StudentDtoResponse(s.getId(),s.getName(),s.getEmail()))
+                        .map(s->modelMapper.map(s,StudentDtoResponse.class))
                         .toList();
         return studentDtoList;
     }
@@ -33,30 +40,20 @@ public class StudentServiceImpl implements StudentService {
         Student student = studentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Student not found with id " + id));
 
-        return new StudentDtoResponse(
-                student.getId(),
-                student.getName(),
-                student.getEmail()
-        );
+        return modelMapper.map(student, StudentDtoResponse.class);
     }
 
     @Override
     public StudentDtoResponse createStudent(StudentDtoRequest studentDtoRequest) {
 
         // 1. Map DTO → Entity
-        Student student = new Student();
-        student.setName(studentDtoRequest.getName());
-        student.setEmail(studentDtoRequest.getEmail());
+        Student student = modelMapper.map(studentDtoRequest, Student.class);
 
         // 2. Save to DB
         Student savedStudent = studentRepository.save(student);
 
         // 3. Map Entity → Response DTO
-        return new StudentDtoResponse(
-                savedStudent.getId(),
-                savedStudent.getName(),
-                savedStudent.getEmail()
-        );
+        return modelMapper.map(savedStudent, StudentDtoResponse.class);
     }
 
     @Override
@@ -64,16 +61,11 @@ public class StudentServiceImpl implements StudentService {
         Student student = studentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
 
-        student.setName(request.getName());
-        student.setEmail(request.getEmail());
+        modelMapper.map(request, student);
 
         Student updated = studentRepository.save(student);
 
-        return new StudentDtoResponse(
-                updated.getId(),
-                updated.getName(),
-                updated.getEmail()
-        );
+        return modelMapper.map(updated, StudentDtoResponse.class);
     }
 
 

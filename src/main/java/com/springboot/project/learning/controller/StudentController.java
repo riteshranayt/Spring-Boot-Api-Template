@@ -15,6 +15,7 @@ public class StudentController {
     StudentController(StudentService studentService){
         this.studentService = studentService;
     }
+
     @GetMapping("/students")
     public List<StudentDtoResponse> GetAllStudents(){
         return studentService.getAllStudents();
@@ -29,10 +30,12 @@ public class StudentController {
     public StudentDtoResponse createStudent(@RequestBody StudentDtoRequest studentDtoRequest){
         return studentService.createStudent(studentDtoRequest);
     }
+
     @PutMapping("/student/{id}")
     public StudentDtoResponse updateStudent(@PathVariable Long id, @RequestBody StudentDtoRequest studentDtoRequest){
         return studentService.updateStudent(id, studentDtoRequest);
     }
+
     @DeleteMapping("/student/{id}")
     public void deleteStudent(@PathVariable Long  id){
         studentService.deleteStudent(id);
