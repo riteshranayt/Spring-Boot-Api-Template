@@ -3,6 +3,7 @@ package com.springboot.project.learning.controller;
 import com.springboot.project.learning.dto.StudentDtoRequest;
 import com.springboot.project.learning.dto.StudentDtoResponse;
 import com.springboot.project.learning.service.StudentService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,12 +30,12 @@ public class StudentController {
     }
 
     @PostMapping("/students")
-    public StudentDtoResponse createStudent(@RequestBody StudentDtoRequest studentDtoRequest){
+    public StudentDtoResponse createStudent(@RequestBody @Valid StudentDtoRequest studentDtoRequest){
         return studentService.createStudent(studentDtoRequest);
     }
 
     @PutMapping("/student/{id}")
-    public StudentDtoResponse updateStudent(@PathVariable Long id, @RequestBody StudentDtoRequest studentDtoRequest){
+    public StudentDtoResponse updateStudent(@PathVariable Long id, @RequestBody @Valid StudentDtoRequest studentDtoRequest){
         return studentService.updateStudent(id, studentDtoRequest);
     }
 
