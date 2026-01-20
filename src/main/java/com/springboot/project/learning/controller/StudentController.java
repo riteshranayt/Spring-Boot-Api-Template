@@ -6,6 +6,8 @@ import com.springboot.project.learning.service.StudentService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @RestController
 public class StudentController {
@@ -39,5 +41,10 @@ public class StudentController {
     @DeleteMapping("/student/{id}")
     public void deleteStudent(@PathVariable Long  id){
         studentService.deleteStudent(id);
+    }
+
+    @PatchMapping("/student/{id}")
+    public StudentDtoResponse updatePartialStudent(@PathVariable Long id, @RequestBody Map<String, Object> reqest){
+        return studentService.updatePartialStudent(id, reqest);
     }
 }

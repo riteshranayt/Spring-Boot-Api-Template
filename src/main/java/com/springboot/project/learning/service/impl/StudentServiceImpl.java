@@ -10,6 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class StudentServiceImpl implements StudentService {
@@ -75,5 +76,23 @@ public class StudentServiceImpl implements StudentService {
             throw new RuntimeException("Student not found");
         }
         studentRepository.deleteById(id);
+    }
+
+    @Override
+    public StudentDtoResponse updatePartialStudent(Long id, Map<String, Object> request) {
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Student not found"));
+
+        request.forEach((key, value)->{
+            switch (key){
+                case "name"  : student.setName((String)value);
+                    break;
+                case "email" : student.setEmail((String) value);
+                    break;
+                default: throw new RuntimeException("Field not allowed to update" + key);
+            }
+        });
+        studentRepository.save(student);
+        return modelMapper.map(student, StudentDtoResponse.class);
     }
 }
