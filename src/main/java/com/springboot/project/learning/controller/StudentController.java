@@ -4,6 +4,7 @@ import com.springboot.project.learning.dto.StudentDtoRequest;
 import com.springboot.project.learning.dto.StudentDtoResponse;
 import com.springboot.project.learning.service.StudentService;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,8 +21,9 @@ public class StudentController {
     }
 
     @GetMapping("/students")
-    public List<StudentDtoResponse> GetAllStudents(){
-        return studentService.getAllStudents();
+    public ResponseEntity<List<StudentDtoResponse>> GetAllStudents(){
+
+        return ResponseEntity.ok(studentService.getAllStudents());
     }
 
     @GetMapping("/student/{id}")
